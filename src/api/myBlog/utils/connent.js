@@ -2,7 +2,7 @@
 let mongoose = require("mongoose")
 
 // 连接数据库
-mongoose.connect('mongodb://localhost/blog', {   // 注意更改数据库名称
+mongoose.connect('mongodb://localhost/myblog', {   // 注意更改数据库名称
   useNewUrlParser: true,
   useUnifiedTopology: true
 });

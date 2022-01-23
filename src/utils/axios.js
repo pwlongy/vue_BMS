@@ -1,6 +1,5 @@
 import axios from 'axios'
-
-export function request (config){
+export function request(config){
 
   const baseURL_dev = 'http://localhost:8080'
 
@@ -12,15 +11,28 @@ export function request (config){
     }
   });
 
+  // 请求拦截器
   instance.interceptors.request.use(function (config) {
+    if (localStorage.JWT_TOKEN) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
+      config.headers.Authorization = `token ${localStorage.JWT_TOKEN}`;
+    }
       return config;
     }, function (error) {
       return Promise.reject(error);
     });
 
-  // Add a response interceptor
+  // 响应拦截器
   instance.interceptors.response.use(function (response) {
-      return response;
+    // let dataCode = response.data.code
+    // console.log(dataCode)
+    // switch (dataCode){
+    //   case 2001: 
+    //     this.$message({
+    //       message: response.data.msg
+    //     });
+    //     break;
+    // }
+    return response.data
     }, function (error) {
       return Promise.reject(error);
     });

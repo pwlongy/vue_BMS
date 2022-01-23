@@ -1,22 +1,29 @@
 <template>
-  <div class="main">
+  <div class="app">
     <top/>
+    <router-view/>
   </div>
 </template>
 
 <script>
-let top = () => import("./top/top.vue")
+let top = () => import("@/components/common/top/header.vue")
+
 export default {
   components: {
     top
-  }
-}
+  },
+  data() {
+    return {
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-  .main{
-    width: 1920px;
-    height: 100%;
-    margin: 0 auto;
-  }
+.app{
+  width: 1920px;
+  margin: auto;
+  position: relative;
+}
+
 </style>

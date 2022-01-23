@@ -6,7 +6,22 @@
           <span class="active"><i class="iconfont icon-faxian "></i>发现</span>
           <span><i class="iconfont icon-friend"></i>IT技术</span>
           <span><i class="iconfont icon-neirong"></i>关注</span>
-          <span><i class="iconfont icon-xiaoxi"></i>消息</span>
+          <el-popover
+            placement="bottom"
+            width="248"
+            popper-class= "popperMessage"
+            trigger="hover">
+            <ul>
+              <li><i class="iconfont icon-xiaoxi"></i>评论</li>
+              <li><i class="iconfont icon-youjian"></i>简信</li>
+              <li><i class="iconfont icon-fasongzhi"></i>投稿请求</li>
+              <li><i class="iconfont icon-xihuan1"></i>喜欢和赞</li>
+              <li><i class="iconfont icon-wodeguanzhu"></i>关注</li>
+              <li><i class="iconfont icon-dashang"></i>赞赏和付费</li>
+              <li><i class="iconfont icon-qita"></i>其他提醒</li>
+            </ul>
+            <span slot="reference"><i class="iconfont icon-xiaoxi"></i>消息</span>
+          </el-popover>
         <!-- 输入框 -->
         <el-input
           placeholder="搜索"
@@ -22,27 +37,41 @@
         <span>注册</span>
       </div>
 
-      <el-popover
+      <!-- <el-popover
         placement="bottom-start"
         width="400"
         trigger="focus"
-        v-else>
-        <ul>
-          <li>1</li>
-          <li>1</li>
-          <li>1</li>
-        </ul>
+        v-else> -->
+        
          <!-- 用户信息 -->
-        <div class="user" slot="reference">
-          <el-avatar :size="50" :src="circleUrl"></el-avatar>
-          <i class="el-icon-caret-bottom"></i>
-        </div>
-      </el-popover>
+       
+      <!-- </el-popover> -->
+        <el-popover
+          placement="bottom"
+          width="200"
+          trigger="hover"
+          popper-class="popoverUser"
+          v-else>
+          <ul>
+            <li><i class="iconfont icon-wode"/>我的主页</li>
+            <li><i class="iconfont icon-tubiao-shoucang"/>收藏的文章</li>
+            <li><i class="iconfont icon-xihuan1"/>喜欢的文章</li>
+            <li><i class="iconfont icon-gaiicon-"/>已购内容</li>
+            <li><i class="iconfont icon-wodeqianbao1"/>我的钱包</li>
+            <li><i class="iconfont icon-shezhi"/>设置</li>
+            <li><i class="iconfont icon-bangzhuyufankui"/>帮助与反馈</li>
+            <li><i class="iconfont icon-tuichu"/>退出</li>
+          </ul>
+          <div class="user" slot="reference">
+            <el-avatar :size="50" :src="circleUrl"></el-avatar>
+            <i class="el-icon-caret-bottom"></i>
+          </div>
+        </el-popover>
 
+        
       <!-- 写文章 -->
-      <u><i class="iconfont icon-line-quillpenyumaobi"></i>写文章</u>
+      <u @click="creation"><i class="iconfont icon-line-quillpenyumaobi"></i>写文章</u>
     </main>
-
     
   </div>
 </template>
@@ -52,7 +81,13 @@ export default {
   data () {
     return {
       input: '',
-      login: false
+      login: false,
+      circleUrl: ''
+    }
+  },
+  methods: {
+    creation(){
+      this
     }
   }
 }
@@ -62,14 +97,16 @@ export default {
   .top{
     height: 70px;
     border-bottom: 1px solid #f0f0f0;
+    background: #fff;
     main{
       width: 1920px;
       height: 100%;
       display: flex;
       align-items: center;
+      justify-content: center;
       .main{
-        width: 1150px;
-        margin-left: 368px;
+        width: 1100px;
+        margin-left: 100px;
         height: 100%;
         display: flex;
         align-items: center;
@@ -99,6 +136,8 @@ export default {
              outline: none;
           }
         }
+
+      
       }
 
       // 登陆注册
@@ -125,10 +164,6 @@ export default {
 
 
       // 用户信息
-      .el-popover{ 
-        height: 100%;
-        display: block;
-        cursor: pointer;
         .user{
           margin-left: 100px;
           display: flex;
@@ -140,10 +175,6 @@ export default {
             color: #999999;
           }
         }
-      }
-      .el-popover:hover{
-        background: #e0e0e0;
-      }
       
 
 
