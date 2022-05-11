@@ -1,0 +1,19 @@
+[{  
+  "courseName":   "文化学习",
+  "stuNum":  23 
+ },   {  
+  "courseName":   "体育与健康",
+    "stuNum":  50 
+ },   {  
+  "courseName":   "音乐鉴赏",
+    "stuNum":  40 
+ },   {  
+  "courseName": "历史",
+    "stuNum":  20 
+ }, {  
+  "courseName":   "英文",
+    "stuNum":  10 
+ }, {  
+  "courseName":   "书法鉴赏",
+    "stuNum":  20 
+ }]

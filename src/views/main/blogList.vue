@@ -1,7 +1,7 @@
 <template>
     <div class="blog">
-      <div class="blogItem" @click="jumpDetail" v-for="(item, index) in blogList" :key="index">
-        <img/>
+      <div class="blogItem" @click="jumpDetail(item._id)" v-for="(item, index) in blogList" :key="index">
+        <img :src="item.title_img" v-if="item.title_img"/>
         <div class="right">
           <h1 v-text="item.title"></h1>
           <p v-text="item.overview"></p>
@@ -9,7 +9,7 @@
             <span>{{item.create_time}}</span>
             <u>笔记</u>
             <label>顶置</label>
-            <p><i class="iconfont icon-xiaoxi"></i>99</p>
+            <p><i class="iconfont icon-xiaoxi"></i>{{item.comment_count}}</p>
           </div>
         </div>
       </div>
@@ -25,9 +25,12 @@ export default {
     }
   },
   methods: {
-    jumpDetail() {
-      this.$router.push("/detail")
+    jumpDetail(id) {
+      this.$router.push("/detail/"+id)
     }
+  },
+  created() {
+    console.log(this.blogList, 111111111)
   }
 }
 </script>
@@ -35,7 +38,6 @@ export default {
 <style lang="scss" scoped>
 .blog{
   width: 100%;
-  height: 400px;
   .blogItem{
     width: 100%;
     min-height: 225px;

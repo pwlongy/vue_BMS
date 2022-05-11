@@ -3,68 +3,82 @@
     <Top/>
     <main>
       <div class="left">
-        <el-badge :value="12">
-          <i class="iconfont icon-dianzan"></i>
+        <el-badge>
+          <i class="iconfont icon-dianzan" @click="pollNum" :class="poll ? 'isActive': ''"></i>
         </el-badge>
-        <el-badge :value="3">
+        <el-badge>
           <i class="iconfont icon-xiaoxi-xiaoxi"></i>
         </el-badge>
-        <el-badge :value="1" type="info">
+        <el-badge type="info">
           <i class="iconfont icon-shoucang1"></i>
         </el-badge>
-        <el-badge :value="2" type="warning">
+        <el-badge type="warning">
           <i class="iconfont icon-weixianyuan"></i>
         </el-badge>
       </div>
-
-      <div class="right">
+    
+      <div class="right" v-if="Object.keys(content).length">
         <div class="pagemsg">
           <div class="title">
             <div class="userMsg">
-              <el-avatar :size="50" :src="circleUrl"></el-avatar>
+              <el-avatar :size="50" :src="content.user_id.avatar"></el-avatar>
               <div>
-                <p>名字</p>
-                <span>时间<u>阅读<i>999999</i></u></span>
+                <p v-text="content.user_id.username"></p>
+                <span>时间<u>{{ content.create_time }}</u></span>
               </div>
             </div>
             <div class="concernBtn">
-              <el-button type="success" plain>关注</el-button>
+              <el-button plain @click="changeFans" :class="flowwer ? 'isActive' : ''">关注</el-button>
             </div>
           </div>
-          <img src="#"/>
+          <img :src="content.title_img" v-if="content.title_img"/>
         </div>
+        <!-- 详细内容 -->
+        <mavon-editor 
+        v-model="content.content" 
+        @change="changeData"
+        :toolbarsFlag= "false"
+        :editable= "false"
+        defaultOpen= "preview"
+        :subfield= "false"
+        previewBackground="#fff"
+        boxShadowStyle="none"
+        ref="md"/>
         <!-- 分类 标签 -->
         <p>
           <span>文章分类</span>
             <el-tag
             type = "success"
-            effect = "plain">
-              前端
+            effect = "plain"
+            v-text="content.class_id.name">
             </el-tag>
           <span>文章标签</span>
           <el-tag
             type = "success"
-            effect = "plain">
-              前端
+            effect = "plain"
+            v-text="content.tags.name">
             </el-tag>
         </p>
         <!-- 评论 -->
-        <Comments></Comments>
+        <Comments :commentsList="commentsList"></Comments>
       </div>
-      <div class="msg">
+
+      <div class="msg" v-if="Object.keys(content).length">
         <span>关于作者</span>
         <div class="userMessage">
-          <el-avatar :size="64" :src="circleUrl"></el-avatar>
+          <el-avatar :size="64" :src="content.user_id.avatar"></el-avatar>
           <div>
-            <span>asbdbsaudua</span>
-            <i>asjdhuishau</i>
+            <span v-text="content.user_id.username"></span>
+            <i>{{content.user_id.content || '故人何处再相逢'}}</i>
           </div>
         </div>
         <div>
-          <p>获得点赞<i>999999</i></p>
-          <u>文章被阅读<i>9999999</i></u>
+          <p>获得点赞 &nbsp;&nbsp;&nbsp;&nbsp;<i>{{content.poll_count.length}}</i></p>
+          <u>文章被阅读&nbsp;&nbsp;&nbsp;&nbsp;<i>{{content.read_count}}</i></u>
         </div>
       </div>
+
+      
     </main>
   </div>
 </template>
@@ -72,21 +86,175 @@
 <script>
 let Top = () => import("@/components/common/top/header.vue")
 let Comments =  () => import("@/components/common/comments/comments.vue")
-
+import {getComments} from "../../utils/comments"
+import {followerMan, updatafollowerMan} from "utils/user.js"
+import {getBlogForId, pollCount, updataCount} from "../../utils/archcle"
 export default {
   data () {
     return {
-      circleUrl: ''  
+      circleUrl: '' ,
+      // 评论列表数据
+      commentsList: [],
+      // 文章id信息
+      id: '',
+      // 发布者id
+      userId: '',
+      // 点赞
+      poll: false,
+      // 判断点赞是否发生变化
+      pollChange: false,
+
+      // 关注
+      flowwer: false,
+      flowwerChange: false,
+
+      content: {
+        // user_id: {
+        //   username: ""
+        // },
+        // class_id: {
+        //   name: ''
+        // },
+        // tags: {
+        //   name
+        // }
+      }
     }
+  },
+  created () {
+    this.id = this.$route.params.id
+    // 获取详情详情信息
+    getBlogForId(this.id)
+      .then(res => {
+        console.log(res.data)
+        this.content = res.data
+        this.userId = res.data.user_id._id
+        res.data.poll_count.forEach(item => {
+          console.log(item, JSON.parse(sessionStorage.getItem('user'))._id)
+          if(item == JSON.parse(sessionStorage.getItem('user'))._id){
+            this.poll = true
+            this.pollChange = true
+          }
+        });
+
+        // 判断用户是否关注过此用户
+        res.data.user_id.fans.forEach(item => {
+          if(item == JSON.parse(sessionStorage.getItem('user'))._id){
+            this.flowwer = true
+            this.flowwerChange = true
+          }
+        })
+      })
+    // 获取评论信息
+    getComments(this.id)
+      .then(res => {
+        console.log(res)
+        this.commentsList = res.data
+      })
+  },
+  async destroyed(){
+    
+    let userId = JSON.parse(sessionStorage.getItem("user"))._id
+    let ispoll = false
+    let isFlowwer = false
+    // 销毁之前进行点赞处理
+    if(this.poll){
+      await pollCount(this.id, userId)
+        .then(res => {
+          console.log(res)
+          ispoll = true
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+    // 取消点赞
+    if(!(this.poll == this.pollChange)){
+      if(ispoll) return 
+      updataCount(this.id, userId)
+        .then(res => {
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+    // 关注
+    if(this.flowwer){
+      await followerMan(this.userId, userId)
+        .then(res => {
+          isFlowwer = true
+          console.log(res)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+
+      // 取消关注
+      if(!(this.flowwer == this.flowwerChange)){
+        if(isFlowwer) return
+        updatafollowerMan(this.userId, userId)
+          .then(res => {
+            console.log(res)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
+ 
   },
   components: {
     Top,
     Comments
+  },
+  methods: {
+    changeData() {
+
+    },
+    // 点赞处理
+    pollNum() {
+      this.poll = !this.poll
+      if(this.poll){
+        this.$message({
+          type: 'success',
+          message: '点赞成功'
+
+        })
+      }else{
+        this.$message({
+          type: 'err',
+          message: '取消成功'
+        })
+      }
+    },
+
+    // 关注处理
+    changeFans(){
+      console.log(this.userId)
+      this.flowwer = !this.flowwer
+      if(this.flowwer){
+        this.$message({
+          type: 'success',
+          message: '关注成功'
+        })
+      }else{
+        this.$message({
+          type: 'err',
+          message: '取消关注'
+        })
+      }
+    }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.isActive{
+  background:#6cbd45 !important;
+  color: #fff !important;
+}
   .detail{
     background: #f4f5f5;
     min-height: 100%;
@@ -126,7 +294,6 @@ export default {
         background: #fff;
         padding: 30px;
         .pagemsg{
-          border-bottom: 1px solid #e5e6eb;
           padding-bottom: 80px;
           .title{
             display: flex;
@@ -162,7 +329,7 @@ export default {
           &>img{
             margin-top: 30px;
             width: 100%;
-            height: 300px;
+            height: 400px;
             border: 1px solid #6cbd45;
           }
         }

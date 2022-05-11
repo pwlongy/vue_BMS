@@ -28,7 +28,19 @@ let userSchema = new Schema({
   },
   avatar: {
     type: String
-  }
+  },
+  // 个性签名
+  content: {
+    type: String
+  },
+  // 性别
+  sex: {
+    type: [Number,String]
+  },
+  // 粉丝
+  fans: Array,
+  // 关注对象
+  followers: Array
 })
 
 module.exports = mongoose.model("Users", userSchema)

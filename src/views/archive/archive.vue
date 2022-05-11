@@ -5,21 +5,15 @@
     </div>
     <div class="right">
         <el-timeline>
-          <el-timeline-item timestamp="2018/4/12" placement="top">
+          <el-timeline-item placement="top" 
+          v-for="(item, index) in blogList" 
+          :key="index"  
+          :timestamp="item.updata_time || item.create_time"
+          @click="changPage(item._id)">
    
-              <h4>更新 Github 模板</h4>
-              <p>王小虎 提交于 2018/4/12 20:46</p>
+              <h4>{{item.title}}</h4>
+              <p>{{username}} 提交于 {{item.create_time}}</p>
   
-          </el-timeline-item>
-          <el-timeline-item timestamp="2018/4/3" placement="top">
-     
-              <h4>更新 Github 模板</h4>
-              <p>王小虎 提交于 2018/4/3 20:46</p>
-
-          </el-timeline-item>
-          <el-timeline-item timestamp="2018/4/2" placement="top">
-              <h4>更新 Github 模板</h4>
-              <p>王小虎 提交于 2018/4/2 20:46</p>
           </el-timeline-item>
         </el-timeline>
 
@@ -27,11 +21,11 @@
             <el-pagination
               @size-change="handleSizeChange"
               @current-change="handleCurrentChange"
-              :current-page="currentPage4"
-              :page-sizes="[10, 15, 20, 30]"
+              :current-page="currentPage"
+              :page-sizes="[1,10]"
               :page-size="100"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="30">
+              :total="pageSize">
             </el-pagination>
           </div>
     </div>
@@ -39,21 +33,55 @@
 </template>
 
 <script>
+import {getUserBlog} from 'utils/archcle.js'
+
 export default {
   data() {
     return {
-      currentPage1: 5,
-      currentPage2: 5,
-      currentPage3: 5,
-      currentPage4: 4
+      // 数据总条数
+      pageSize: 0,
+      currentPage: 1,
+      // 每页条数
+      pageNum: 1,
+      // 用户信息
+      userId : '',
+      username: '',
+      // 博客数据
+      blogList: []
     }
+  },
+  created() {
+    // 获取用户id
+    this.userId = JSON.parse(sessionStorage.getItem('user'))._id
+    this.username = JSON.parse(sessionStorage.getItem('user')).username
+    console.log(this.userId)
+    this.getBlog()
   },
   methods: {
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
+      // 修改每页条数
+      this.pageNum = val
+      this.getBlog()
+
     },
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
+      this.currentPage = val
+      this.getBlog()
+    },
+    // 获取个人文章数据
+    getBlog() {
+      getUserBlog(this.userId, this.currentPage-1, this.pageNum)
+        .then(res => {
+          console.log(res)
+          this.blogList = res.data
+          this.pageSize = res.count
+        })
+    },
+    changPage(id){
+      console.log(123456789)
+      this.$router.push("/detai?"+ id)
     }
   }
 }
@@ -78,6 +106,17 @@ export default {
     }
     .right{
       flex: 1;
+      display: flex;
+      align-items: center;
+      flex-direction: column;
+      justify-content: center;
+      .el-timeline{
+        width: 600px;
+        min-height: 700px;
+      }
+      .block{
+        margin-top: 10px;
+      }
       
     }
   }

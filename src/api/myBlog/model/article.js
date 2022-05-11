@@ -10,7 +10,8 @@ let ArticleSchema = new mongoose.Schema({
   // 用户id
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    required: [true, "用户id为必填项"]
+    required: [true, "用户id为必填项"],
+    ref: "Users"
   },
   // 文章头部图片
   title_img: {
@@ -31,11 +32,24 @@ let ArticleSchema = new mongoose.Schema({
   // 最后修改时间
   update_time: Date,
   // 分类id
-  class_id: Number,
+  class_id: {
+    type: mongoose.Schema.ObjectId,
+    require: [true, "分类id为必填项"],
+    ref: 'Categorys'
+  },
   // 点赞数
-  poll_count: Number,
+  poll_count: Array,
   // 评论数
-  comment_count: Number
+  comment_count: Number,
+  // 标签
+  tags: {
+    type: mongoose.Schema.ObjectId,
+    require: [true, "标签类型为必选类型"],
+    ref: "Tags"
+  },
+  // 阅读数量
+  read_count: Number
+
 })
 
 module.exports = mongoose.model("Articles", ArticleSchema)

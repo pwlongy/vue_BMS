@@ -9,6 +9,13 @@ Vue.config.productionTip = false
 import AMap from "vue-amap"
 Vue.use(AMap)
 
+// 引入标签云组件
+import tagCloud from 'v-tag-cloud'
+Vue.use(tagCloud)
+
+// 事件车
+Vue.prototype.event=new Vue();
+
 // 初始化 AMap
 AMap.initAMapApiLoader({
   // key 值

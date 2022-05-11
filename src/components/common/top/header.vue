@@ -6,6 +6,7 @@
       <el-input 
         placeholder="请输入内容" 
         v-model="input" 
+        @change="changeinput"
         class="input-with-select"
         prefix-icon="el-icon-search">
       </el-input>
@@ -14,7 +15,8 @@
       <el-menu 
         :default-active="activeIndex" 
         class="el-menu-demo" 
-        mode="horizontal" 
+        mode="horizontal"
+        menu-trigger="click"
         @select="handleSelect"
         router
         >
@@ -22,12 +24,18 @@
         <el-menu-item index="2" route="/archive">归档</el-menu-item>
         <el-menu-item index="3" route="/label">标签</el-menu-item>
         <el-menu-item index="4" route="/note">笔记</el-menu-item>
-        <el-menu-item index="5" route="/life">生活</el-menu-item>
         <el-menu-item index="6" route="/tourism">旅程</el-menu-item>
-        <el-submenu index="7">
-          <template slot="title">gitGHub</template>
-          <el-menu-item index="7-1">选项1</el-menu-item>
-          <el-menu-item index="7-2">选项2</el-menu-item>
+        <el-menu-item index="7" route="/login" class="avatar" v-if="!avater" >
+           <el-avatar :size="35" ></el-avatar>
+           未登录
+        </el-menu-item>
+        <el-submenu index="8" v-else>
+          <template slot="title">
+            <el-avatar :size="35" :src="avater"></el-avatar>
+          </template>
+          <el-menu-item index="8-1" route="/CreativeCenter">个人信息</el-menu-item>
+          <el-menu-item index="8-2" route="/create">写文章</el-menu-item>
+          <el-menu-item index="8-2" route="/login" @click="loginOut">退出登录</el-menu-item>
         </el-submenu>
       </el-menu>
     </div>
@@ -41,8 +49,13 @@ export default {
       input: '',
 
       // 导航
-      activeIndex: '1'
+      activeIndex: '1',
+      // 头像图片
+      avater: ''
     }
+  },
+  created() {
+    this.avater = JSON.parse(sessionStorage.getItem('user')).avatar || ''
   },
   mounted() {
     let path = this.$route.path
@@ -55,7 +68,15 @@ export default {
   },
   methods: {
     handleSelect(){
-
+      
+    },
+    // 退出登录
+    loginOut(){
+      sessionStorage.removeItem('user')
+    },
+    // 确定输入内容
+    changeinput(){
+      this.$emit("changeinput", this.input)
     }
   }
 }
@@ -73,6 +94,9 @@ export default {
     background: #fff;
     .logo{
 
+    }
+    .avatar{
+      color: rgb(175, 164, 164) !important; 
     }
     .main{
       width: 50%;

@@ -26,7 +26,10 @@ import {
   Pagination,
   Upload,
   Message,
-  MessageBox
+  MessageBox,
+  Dialog,
+  Radio,
+  RadioGroup
 } from "element-ui"
 
 import 'element-ui/lib/theme-chalk/index.css';
@@ -56,8 +59,9 @@ Vue.use(TimelineItem)
 Vue.use(Card)
 Vue.use(Pagination)
 Vue.use(Upload)
-Vue.use(Message)
-Vue.use(MessageBox)
+Vue.use(Dialog)
+Vue.use(Radio)
+Vue.use(RadioGroup)
 
 
 Vue.prototype.$message = Message;

@@ -14,11 +14,11 @@
         margin: 0;
         padding: 0;
     }
-    html,body{
+    html, body{
       height: 100%;
     }
     #app{
-      height: 100%;
+      min-height: 100%;
     }
     *{
       /* 所有元素触发怪异盒模型 */
@@ -175,10 +175,29 @@
         }
         .category{
           margin-top: 25px;
+          .categorytag{
+            height: 120px;
+            overflow-y: auto;
+          }
+          .categorytag::-webkit-scrollbar {
+              width: 4px;    
+              /*height: 4px;*/
+          }
+          .categorytag::-webkit-scrollbar-thumb {
+              border-radius: 20px;
+              -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+              background: rgba(0,0,0,0.2);
+          }
+          .categorytag::-webkit-scrollbar-track {
+              -webkit-box-shadow: inset 0 0 5px transparent;
+              border-radius: 0;
+              background: transparent;
+
+          }
           .main{
             display: flex;
             flex-wrap: wrap;
-            span{
+            span, &>.el-input{
               display: block;
               width: 110px;
               height: 35px;
@@ -220,6 +239,9 @@
               text-align: center;
               line-height: 107px;
               font-size: 30px;
+              img{
+                height: 100%;
+              }
             }
             &>span{
               margin-top: 20px;

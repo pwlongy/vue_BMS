@@ -5,11 +5,11 @@
       <div class="menu">
             <!-- 用户基本信息 -->
             <div class="userMsg">
-               <el-avatar :size="60" :src="circleUrl"></el-avatar>
-              <span>121212</span>
+               <el-avatar :size="60" :src="user.avatar"></el-avatar>
+              <span>{{user.username}}</span>
             </div>
             <div class="write">
-              <button>写文章</button>
+              <button @click="pageChange">写文章</button>
             </div>
 
           
@@ -17,20 +17,34 @@
               default-active="1"
               class="el-menu-vertical-demo"
               router>
-              <el-menu-item index="1" route="/CreativeCenter/home">
+              <el-menu-item index="1" route="/">
                 <i class="iconfont icon-shouyetianchong"></i>
                 <span slot="title">首页</span>
               </el-menu-item>
-              <el-submenu index="2">
+              <el-menu-item index="2" route="/CreativeCenter/userMsg">
+                <i class="iconfont icon-shouyetianchong"></i>
+                <span slot="title">个人基本信息</span>
+              </el-menu-item>
+              <el-submenu index="3">
                 <template slot="title">
                   <i class="iconfont icon-shuju9"></i>
                   <span>内容管理</span>
                 </template>
-                <el-menu-item index="2-1" route="/CreativeCenter/ArticleManagement">文章管理</el-menu-item>
-                <el-menu-item index="2-2">专栏管理</el-menu-item>
-                <el-menu-item index="2-3">沸点管理</el-menu-item>
+                <el-menu-item index="3-1" route="/CreativeCenter/ArticleManagement">文章管理</el-menu-item>
+                <!-- <el-menu-item index="2-2">专栏管理</el-menu-item>
+                <el-menu-item index="2-3">沸点管理</el-menu-item> -->
               </el-submenu>
-              <el-submenu index="3">
+               <el-submenu index="4">
+                <template slot="title">
+                  <i class="iconfont icon-shuju9"></i>
+                  <span>关注</span>
+                </template>
+                <el-menu-item index="4-1" route="/CreativeCenter/concern">关注者</el-menu-item>
+                <el-menu-item index="4-1" route="/CreativeCenter/fans">粉丝</el-menu-item>
+                <!-- <el-menu-item index="2-2">专栏管理</el-menu-item>
+                <el-menu-item index="2-3">沸点管理</el-menu-item> -->
+              </el-submenu>
+              <!-- <el-submenu index="3">
                 <template slot="title">
                   <i class="iconfont icon-shuju"></i>
                   <span>数据中心</span>
@@ -38,7 +52,7 @@
                 <el-menu-item index="3-1">内容数据</el-menu-item>
                 <el-menu-item index="3-2">关注者数据</el-menu-item>
                 <el-menu-item index="3-3">沸点管理</el-menu-item>
-              </el-submenu>
+              </el-submenu> -->
              
             </el-menu>
       </div>
@@ -52,11 +66,22 @@
 </template>
 
 <script>
-let Top = () => import("@/components/common/top/top.vue")
+let Top = () => import("@/components/common/top/header.vue")
 export default {
   data () {
     return {
-      circleUrl: ''
+      circleUrl: '',
+      // 用户基本信息
+      user: {}
+    }
+  },
+  created() {
+    this.user = JSON.parse(sessionStorage.getItem('user')) 
+  },
+  methods:{
+    pageChange() {
+      // 页面的跳转
+      this.$router.push('/create')
     }
   },
   components: {

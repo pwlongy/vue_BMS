@@ -73,6 +73,7 @@
 <script>
 import vueCanvasNest from "vue-canvas-nest";
 import {login, regist} from "utils/user.js"
+import {mapMutations} from "vuex"
 export default {
   data() {
     return {
@@ -94,6 +95,8 @@ export default {
     vueCanvasNest
   },
  methods: {
+   // 储存到store中的方法
+   ...mapMutations("user", ["getUserMessage"]),
     go (type) {
       this.active = type
     },
@@ -101,14 +104,21 @@ export default {
       if ( this.active === 'login') {
         // 实现登录功能
         login(this.loginForm).then(res => {
+          console.log(res)
           switch (res.code){
-            case 2000:
+              case 2000:
               this.$router.push("/home")
               break;
             case 2001:
               this.$message("用户名或密码正确")
               break;
           }
+          
+          // 将用户信息存储在 store 中
+          // this.getUserMessage(res.data)
+          // 将数据保存在sessionstorage中
+          sessionStorage.setItem("user", JSON.stringify(res.data))
+
         })
       } 
       if ( this.active === 'register') {
@@ -137,7 +147,7 @@ export default {
   * {
     margin: 0;
     padding: 0;
-}
+  }
 
 body {
     height: 100vh;
@@ -153,7 +163,7 @@ body {
     width: 70rem;
     margin: auto;
     transform: translateY(50%);
-    margin-top: -337px;
+    margin-top: -200px;
 }
 
 .container img {

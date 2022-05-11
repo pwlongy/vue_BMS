@@ -9,6 +9,9 @@ const MongoStore = require("connect-mongo")
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var ArticleRouter = require("./routes/article")
+var commentRouter = require("./routes/comments")
+var tagRouter = require("./routes/tag");
+var categoryRouter = require('./routes/category');
 
 var app = express();
 
@@ -25,7 +28,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   cookie: {
-    maxAge: 360000         // 设置过期时间
+    maxAge: 360000*30         // 设置过期时间
   },
   rolling: true,           // 每次请求都会刷新时间
   store: MongoStore.create({
@@ -43,7 +46,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use("/article", ArticleRouter)
+app.use("/article", ArticleRouter);
+app.use("/comment", commentRouter);
+app.use("/tag", tagRouter);
+app.use("/category", categoryRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

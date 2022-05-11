@@ -1,5 +1,4 @@
 const mongoose = require("mongoose")
-const article = require("./article")
 
 const commentSchema = new mongoose.Schema({
   // 评论时间
@@ -11,15 +10,19 @@ const commentSchema = new mongoose.Schema({
   },
   // 评论人id
   user_id: {
-    type: String
+    type: mongoose.Schema.ObjectId,
+    // required: [true, "评论id不能为空"],
+    ref: 'Users',
   },
   // 文章id
   article_id: {
-    type: String
+    type:  mongoose.Schema.ObjectId,
+    required: [true, "文章id不能为空"]
   },
   // 父级评论id
   father_comment: {
-    type: String
+    type: String,
+    default: ""
   }
 })
 

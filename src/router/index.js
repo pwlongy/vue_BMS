@@ -45,13 +45,41 @@ const routes = [
     component: () => import("@/views/login/login.vue")
   },
   { // 详情
-    path: '/detail',
+    path: '/detail/:id',
     component: () => import("@/views/detail/detail.vue")
   },
   { // 写文档
     path: '/create',
     component: () => import("@/views/creation/creation.vue")
   },
+  // 成功页面
+  {
+    path: '/success',
+    component: () => import("@/components/common/success.vue")
+  },
+  //  用户基本信息
+  {
+    path: '/CreativeCenter',
+    component: () => import("@/views/CreativeCenter/CreativeCenter"),
+    children: [
+      {
+        path: 'ArticleManagement',
+        component: () => import("@/views/CreativeCenter/child/ArticleManagement")
+      },
+      {
+        path: 'userMsg',
+        component: () => import("@/views/login/user.vue")
+      },
+      {
+        path: 'fans',
+        component: () => import("@/views/CreativeCenter/child/fans")
+      },
+      {
+        path: 'concern',
+        component: () => import("@/views/CreativeCenter/child/concern")
+      }
+    ]
+  }
 ]
 
 const router = new VueRouter({

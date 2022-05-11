@@ -1,9 +1,9 @@
 <template>
-  <div class="Information">
+  <div class="Information" v-if="Object.keys(user).length">
     <!-- <el-avatar :size="100" :src="squareUrl"></el-avatar> -->
-    <img src="../../assets/avatar.jpg"/>
-    <h1>何须问</h1>
-    <span>故人何处再相逢</span>
+    <img :src="user.avatar"/>
+    <h1>{{user.username}}</h1>
+    <span>{{user.content || '故人何处再相逢'}}</span>
     <div class="tag">
       <div>
         <h2>文章</h2>
@@ -29,8 +29,16 @@
 export default {
   data() {
     return {
-      squareUrl: '../../assets/avatar.jpg'
+      squareUrl: '../../assets/avatar.jpg',
+      
+      user: {}
+
     }
+  },
+  created() {
+    // 获取user信息
+    this.user = JSON.parse(sessionStorage.getItem("user"))
+    console.log(this.user)
   }
 }
 </script>
